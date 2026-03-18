@@ -2,4 +2,7 @@ module github.com/HaroldVelez13/go_workers/chat-service
 
 go 1.26.1
 
-require github.com/lib/pq v1.12.0 // indirect
+require (
+	github.com/google/uuid v1.6.0
+	github.com/lib/pq v1.12.0
+)

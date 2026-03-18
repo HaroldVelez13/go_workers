@@ -3,5 +3,6 @@ go 1.26.1
 use (
 	./services/auth-service
 	./services/chat-service
+	./services/llm-service
 	./shared
 )

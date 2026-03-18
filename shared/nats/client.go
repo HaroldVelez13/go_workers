@@ -41,3 +41,12 @@ func (c *Client) Publish(subject string, data interface{}) error {
 
 	return c.conn.Publish(subject, bytes)
 }
+
+func (c *Client) Subscribe(subject string, handler func(msg []byte) error) error {
+	_, err := c.conn.Subscribe(subject, func(m *nats.Msg) {
+		if err := handler(m.Data); err != nil {
+			log.Println("handler error:", err)
+		}
+	})
+	return err
+}
