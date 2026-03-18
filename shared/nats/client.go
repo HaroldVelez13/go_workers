@@ -1,6 +1,7 @@
 package nats
 
 import (
+	"encoding/json"
 	"log"
 	"time"
 
@@ -30,4 +31,13 @@ func NewClient(cfg Config) (*Client, error) {
 	}
 
 	return &Client{conn: conn}, nil
+}
+
+func (c *Client) Publish(subject string, data interface{}) error {
+	bytes, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	return c.conn.Publish(subject, bytes)
 }
