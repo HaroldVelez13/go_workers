@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/HaroldVelez13/go_workers/services/llm-service/internal/service"
 	"github.com/HaroldVelez13/go_workers/shared/events"
 	"github.com/HaroldVelez13/go_workers/shared/nats"
 )
@@ -26,19 +27,18 @@ func (c *MessageConsumer) Start() error {
 
 		log.Println("Mensaje recibido:", event.Payload.Content)
 
-		// 🤖 respuesta mock (luego LLM real)
+		// 👇 inicializar servicio LLM
+		svc := service.NewLLMService(c.nc)
+
+		// 🤖 generar respuesta (puedes cambiar esto luego por OpenAI)
 		response := "Echo: " + event.Payload.Content
 
-		respEvent := events.ResponseGeneratedEvent{
-			BaseEvent: events.NewBaseEvent("chat.response.generated", event.Metadata.UserID, event.Metadata.TraceID),
-			Payload: events.ResponseGeneratedPayload{
-				ChatID:    event.Payload.ChatID,
-				MessageID: event.Payload.MessageID + "-resp",
-				Content:   response,
-				Role:      "assistant",
-			},
-		}
-
-		return c.nc.Publish(events.SubjectResponseGenerated, respEvent)
+		// 👇 STREAMING REAL (este es el cambio importante)
+		return svc.StreamResponse(
+			event.Payload.ChatID,
+			response,
+			event.Metadata.UserID,
+			event.Metadata.TraceID,
+		)
 	})
 }

@@ -1,6 +1,8 @@
 package events
 
-import "time"
+import (
+	"time"
+)
 
 type Metadata struct {
 	TraceID string `json:"trace_id"`
