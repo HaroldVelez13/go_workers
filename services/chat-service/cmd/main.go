@@ -9,6 +9,7 @@ import (
 
 	"github.com/HaroldVelez13/go_workers/shared/nats"
 
+	"github.com/HaroldVelez13/go_workers/chat-service/internal/consumer"
 	db "github.com/HaroldVelez13/go_workers/chat-service/internal/db"
 	"github.com/HaroldVelez13/go_workers/chat-service/internal/handler"
 	"github.com/HaroldVelez13/go_workers/chat-service/internal/repository"
@@ -40,6 +41,13 @@ func main() {
 	repo := repository.NewMessageRepository(dbConn)
 	svc := service.NewChatService(repo, nc)
 	h := handler.NewChatHandler(svc)
+
+	consumer := consumer.NewResponseConsumer(nc, repo)
+
+	err = consumer.Start()
+	if err != nil {
+		log.Fatal("consumer error:", err)
+	}
 
 	// 🌐 Routes
 	http.HandleFunc("/messages", h.CreateMessage)
