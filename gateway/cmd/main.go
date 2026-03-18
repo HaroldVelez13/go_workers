@@ -23,10 +23,10 @@ func main() {
 	manager := sse.NewManager()
 
 	// consumer
-	consumer := consumer.NewResponseConsumer(nc, manager)
+	chunkConsumer := consumer.NewChunkConsumer(nc, manager)
 	go func() {
-		if err := consumer.Start(); err != nil {
-			log.Fatal(err)
+		if err := chunkConsumer.Start(); err != nil {
+			log.Println("chunk consumer error:", err)
 		}
 	}()
 
