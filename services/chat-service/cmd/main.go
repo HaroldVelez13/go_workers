@@ -42,12 +42,13 @@ func main() {
 	svc := service.NewChatService(repo, nc)
 	h := handler.NewChatHandler(svc)
 
-	consumer := consumer.NewResponseConsumer(nc, repo)
+	chunkConsumer := consumer.NewChunkConsumer(nc, repo)
 
-	err = consumer.Start()
-	if err != nil {
-		log.Fatal("consumer error:", err)
-	}
+	go func() {
+		if err := chunkConsumer.Start(); err != nil {
+			log.Println("chunk consumer error:", err)
+		}
+	}()
 
 	// 🌐 Routes
 	http.HandleFunc("/messages", h.CreateMessage)
