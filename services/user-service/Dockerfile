@@ -22,7 +22,7 @@ WORKDIR /root/
 COPY --from=builder /app/app .
 
 # puerto (opcional)
-EXPOSE 8081
+EXPOSE 8084
 
 # run
 CMD ["./app"]
