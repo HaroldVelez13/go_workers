@@ -1,6 +1,7 @@
 go 1.26.1
 
 use (
+	./gateway
 	./services/auth-service
 	./services/chat-service
 	./services/llm-service
